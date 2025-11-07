@@ -31,7 +31,7 @@ void main() {
                   CatalogItemContext(
                     id: 'col1',
                     data: widgetData,
-                    buildChild: (_, [_]) =>
+                    buildChild: (_, [__]) =>
                         const Text(''), // Mock child builder
                     dispatchEvent: (UiEvent event) {},
                     buildContext: context,
@@ -80,7 +80,7 @@ void main() {
                   CatalogItemContext(
                     id: data['id'] as String,
                     data: data['widget'] as JsonMap,
-                    buildChild: (_, [_]) => const SizedBox(),
+                    buildChild: (_, [__]) => const SizedBox(),
                     dispatchEvent: (UiEvent event) {},
                     buildContext: context,
                     dataContext: DataContext(DataModel(), '/'),
