@@ -20,7 +20,11 @@ dependencies:
   collection: ^1.19.0
   flutter:
     sdk: flutter
-  json_schema_builder: ^0.1.3
+  json_schema_builder:
+    git:
+      url: https://github.com/mugbug/genui.git
+      ref: 3.27.3
+      path: packages/json_schema_builder
   logging: ^1.3.0
 
 dev_dependencies:

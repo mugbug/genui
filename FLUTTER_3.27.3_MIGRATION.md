@@ -31,6 +31,25 @@ The following dependencies were adjusted to match Flutter SDK pinned versions:
 - `collection`: Changed from ^1.19.1 to ^1.19.0
 - `characters`: Changed from ^1.4.0 to ^1.3.0
 
+### Git Dependencies
+To use the Flutter 3.27.3-compatible version from the fork, `json_schema_builder` was changed to use a git dependency:
+
+```yaml
+json_schema_builder:
+  git:
+    url: https://github.com/mugbug/genui.git
+    ref: 3.27.3
+    path: packages/json_schema_builder
+```
+
+This change was applied to all packages that depend on `json_schema_builder`:
+- `flutter_genui`
+- `flutter_genui_firebase_ai`
+- `flutter_genui_a2ui`
+- `examples/catalog_gallery`
+- `examples/custom_backend`
+- `examples/travel_app`
+
 ## Code Changes
 
 ### Test Files
