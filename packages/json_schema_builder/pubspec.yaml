@@ -12,7 +12,7 @@ issue_tracker: https://github.com/flutter/genui/issues
 environment:
   sdk: ">=3.6.1 <4.0.0"
 
-# resolution: workspace
+resolution: workspace
 
 dependencies:
   args: ^2.7.0

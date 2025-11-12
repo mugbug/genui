@@ -117,3 +117,15 @@ cd packages/flutter_genui
 flutter test       # All 106 tests should pass
 ```
 
+## New Package: flutter_genui_litellm
+
+A new integration package `flutter_genui_litellm` was created to provide LiteLLM support for `flutter_genui`. This package follows the same architecture as `flutter_genui_firebase_ai` and provides:
+
+- **LiteLLMContentGenerator**: Implementation of `ContentGenerator` that connects to LiteLLM servers
+- **LiteLLMContentConverter**: Converts between `ChatMessage` and LiteLLM's OpenAI-compatible message format
+- **LiteLLMSchemaAdapter**: Adapts JSON schemas to OpenAI function calling format
+- **Multi-Provider Support**: Works with 100+ LLM providers through LiteLLM (OpenAI, Anthropic, Google, Cohere, etc.)
+- **Full Tool Calling Support**: Complete integration with GenUI's tool system for dynamic UI generation
+
+The package is workspace-compatible and passes all tests with Flutter 3.27.3.
+
