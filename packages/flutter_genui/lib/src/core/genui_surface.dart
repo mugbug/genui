@@ -24,6 +24,7 @@ class GenUiSurface extends StatefulWidget {
     required this.host,
     required this.surfaceId,
     this.defaultBuilder,
+    this.onUserActionEvent,
   });
 
   /// The manager that holds the state of the UI.
@@ -34,6 +35,9 @@ class GenUiSurface extends StatefulWidget {
 
   /// A builder for the widget to display when the surface has no definition.
   final WidgetBuilder? defaultBuilder;
+
+  /// A callback for when a user interacts with a widget.
+  final UiEventCallback? onUserActionEvent;
 
   @override
   State<GenUiSurface> createState() => _GenUiSurfaceState();
@@ -100,8 +104,13 @@ class _GenUiSurfaceState extends State<GenUiSurface> {
   }
 
   void _dispatchEvent(UiEvent event) {
+    final onUserActionEvent = widget.onUserActionEvent;
+    if (onUserActionEvent != null) {
+      onUserActionEvent(event);
+      return;
+    }
+    
     if (event is UserActionEvent && event.name == 'showModal') {
-      print('GENUI: event: ${event.name}');
       final definition = widget.host.getSurfaceNotifier(widget.surfaceId).value;
       if (definition == null) return;
       final modalId = event.context['modalId'] as String;
@@ -121,67 +130,65 @@ class _GenUiSurfaceState extends State<GenUiSurface> {
       return;
     }
 
-    if (event is UserActionEvent && event.name == 'openDeeplink') {
-      print('GENUI: event: ${event.name}');
-      final urlTemplate = event.context['url'] as String?;
-      if (urlTemplate != null) {
-        genUiLogger.info('Opening deeplink: $urlTemplate');
+    // if (event is UserActionEvent && event.name == 'openDeeplink') {
+    //   print('GENUI: event: ${event.name}');
+    //   final urlTemplate = event.context['url'] as String?;
+    //   if (urlTemplate != null) {
+    //     genUiLogger.info('Opening deeplink: $urlTemplate');
         
-        // Extract all parameters from context (excluding 'url')
-        final params = <String, dynamic>{};
-        for (final entry in event.context.entries) {
-          if (entry.key != 'url' && entry.value != null) {
-            params[entry.key] = entry.value;
-          }
-        }
+    //     // Extract all parameters from context (excluding 'url')
+    //     final params = <String, dynamic>{};
+    //     for (final entry in event.context.entries) {
+    //       if (entry.key != 'url' && entry.value != null) {
+    //         params[entry.key] = entry.value;
+    //       }
+    //     }
         
-        // Resolve path parameters (replace $param with actual values)
-        var resolvedPath = urlTemplate;
-        for (final entry in params.entries) {
-          resolvedPath = resolvedPath.replaceAll('\$${entry.key}', entry.value.toString());
-        }
+    //     // Resolve path parameters (replace $param with actual values)
+    //     var resolvedPath = urlTemplate;
+    //     for (final entry in params.entries) {
+    //       resolvedPath = resolvedPath.replaceAll('\$${entry.key}', entry.value.toString());
+    //     }
         
-        // Extract remaining params as query parameters
-        final pathParamPattern = RegExp(r'\$(\w+)');
-        final pathParamNames = pathParamPattern
-            .allMatches(urlTemplate)
-            .map((m) => m.group(1)!)
-            .toSet();
+    //     // Extract remaining params as query parameters
+    //     final pathParamPattern = RegExp(r'\$(\w+)');
+    //     final pathParamNames = pathParamPattern
+    //         .allMatches(urlTemplate)
+    //         .map((m) => m.group(1)!)
+    //         .toSet();
         
-        final queryParams = params.entries
-            .where((e) => !pathParamNames.contains(e.key))
-            .map((e) => '${e.key}=${e.value}')
-            .join('&');
+    //     final queryParams = params.entries
+    //         .where((e) => !pathParamNames.contains(e.key))
+    //         .map((e) => '${e.key}=${e.value}')
+    //         .join('&');
         
-        final finalUrl = queryParams.isEmpty 
-            ? resolvedPath 
-            : '$resolvedPath?$queryParams';
+    //     final finalUrl = queryParams.isEmpty 
+    //         ? resolvedPath 
+    //         : '$resolvedPath?$queryParams';
         
-        // Try go_router first, fall back to Navigator
-        try {
-          // Try to use go_router if available (via extension method)
-          final navigator = Navigator.of(context);
-          if (navigator.widget.pages.isEmpty) {
-            // Using go_router - try context.go()
-            try {
-              // This will work if go_router is available
-              // ignore: avoid_dynamic_calls
-              (context as dynamic).go(finalUrl);
-            } catch (_) {
-              // Fall back to pushNamed
-              navigator.pushNamed(finalUrl);
-            }
-          } else {
-            navigator.pushNamed(finalUrl);
-          }
-        } catch (e) {
-          genUiLogger.warning('Failed to navigate to $finalUrl: $e');
-        }
-      }
-      return;
-    }
-
-    print('GENUI: event: ${event.toMap()}');
+    //     // Try go_router first, fall back to Navigator
+    //     try {
+    //       // Try to use go_router if available (via extension method)
+    //       final navigator = Navigator.of(context);
+    //       if (navigator.widget.pages.isEmpty) {
+    //         // Using go_router - try context.go()
+    //         try {
+    //           // This will work if go_router is available
+    //           // ignore: avoid_dynamic_calls
+    //           (context as dynamic).go(finalUrl);
+    //         } catch (_) {
+    //           // Fall back to pushNamed
+    //           navigator.pushNamed(finalUrl);
+    //         }
+    //       } else {
+    //         navigator.pushNamed(finalUrl);
+    //       }
+    //     } catch (e) {
+    //       genUiLogger.warning('Failed to navigate to $finalUrl: $e');
+    //     }
+    //   }
+    //   return;
+    // }
 
     // The event comes in without a surfaceId, which we add here.
     final eventMap = {...event.toMap(), surfaceIdKey: widget.surfaceId};
