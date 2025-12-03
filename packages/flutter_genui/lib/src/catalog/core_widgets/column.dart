@@ -117,6 +117,7 @@ final column = CatalogItem(
           mainAxisAlignment: _parseMainAxisAlignment(columnData.distribution),
           crossAxisAlignment: _parseCrossAxisAlignment(columnData.alignment),
           mainAxisSize: MainAxisSize.min,
+          spacing: 12,
           children: childIds
               .map(
                 (componentId) => buildWeightedChild(
